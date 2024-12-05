@@ -1,8 +1,21 @@
-import axios from 'axios'
-
 const api = axios.create({
     baseURL: 'http://localhost:3000'
 })
+
+const getApi = () => {
+    const listarApi = document.getElementById('listarApi')
+
+    api.get("/listVendas")
+        .then((response) => {
+            listarApi.innerHTML = ''
+            response.data.forEach((venda) => {
+                const item = document.createElement('div')
+                item.textContent = `ID: ${venda.id}, Produto: ${venda.productName}, Preço: ${venda.productPrice}, Quantidade de vendas: ${venda.qntSales}`
+                listarApi.appendChild(item)
+            })
+        })
+        .catch(error => console.log(error))
+}
 
 const newProduct = () => {
 
@@ -25,7 +38,9 @@ const newProduct = () => {
             console.log(error)
         })
 
-    window.location.reload()
+    //window.location.reload()
 }
 
 document.getElementById('button').addEventListener('click', newProduct)
+
+document.addEventListener('DOMContentLoaded', getApi)
