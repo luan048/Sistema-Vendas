@@ -2,21 +2,29 @@ const api = axios.create({
     baseURL: 'http://localhost:3000'
 })
 
-const getApi = () => {
-    const listarApi = document.getElementById('listarApi')
+async function getApi() {
+    const listarApi = document.getElementById('listarApi');
+    const rotaListar = 'http://localhost:3000/listVendas';
 
-    api.get("/listVendas")
-        .then((response) => {
-            listarApi.innerHTML = ''
-            response.data.forEach((venda) => {
-                const item = document.createElement('div')
-                item.textContent = `ID: ${venda.id}, Produto: ${venda.productName}, Preço: ${venda.productPrice}, Quantidade de vendas: ${venda.qntSales}`
-                listarApi.appendChild(item)
-            })
-        })
-        .catch(error => console.log(error))
+    try {
+        const responseRepo = await fetch(rotaListar);
+
+        const data = await responseRepo.json()
+
+        listarApi.innerHTML = ''
+
+        data.result.vendas.forEach(item => {
+            const divItem = document.createElement('div')
+            divItem.textContent = `ID: ${item.id}, Nome do Produto: ${item.productName}, Preço do Produto: ${item.productPrice}, Quantidade de Vendas: ${item.qntSales}`
+            listarApi.appendChild(divItem)
+        });
+    }
+    catch(error) {
+        console.log(error)
+    }
 }
 
+// Funçao para criar cadastrar novo produto na API
 const newProduct = () => {
 
     const inputName = document.getElementById('inputName'.trim()).value
@@ -38,7 +46,7 @@ const newProduct = () => {
             console.log(error)
         })
 
-    //window.location.reload()
+    window.location.reload()
 }
 
 document.getElementById('button').addEventListener('click', newProduct)
